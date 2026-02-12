@@ -1,0 +1,6 @@
+print("Hello, World!")
+print("דוד כהן")
+print("דוד כהן")
+print("דוד כהן")
+print("דוד כהן")
+print("דוד כהן")
