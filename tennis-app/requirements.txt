@@ -1,0 +1,28 @@
+# Backend - Flask API
+flask==3.0.0
+flask-cors==4.0.0
+flask-sqlalchemy==3.1.1
+flask-migrate==4.0.5
+python-dotenv==1.0.0
+
+# Frontend - Streamlit
+streamlit==1.29.0
+requests==2.31.0
+
+# Database
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+
+# Authentication & Security
+werkzeug==3.0.1
+python-jose[cryptography]==3.3.0
+
+# Notifications (future)
+pyrebase4==4.9.0
+
+# Payment (future)
+stripe==7.0.0
+
+# Utilities
+python-dateutil==2.8.2
+pydantic==2.5.2
