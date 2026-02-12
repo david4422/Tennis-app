@@ -21,7 +21,7 @@ app.register_blueprint(user_bp, url_prefix='/api/users')
 
 @app.route('/', methods=['GET'])
 def health():
-    return {'status': 'ok and david yo right', 'message': 'Server is running on port 5000'}, 200
+    return {'welcome to backend' : ':)' , 'status': 'ok and david yo right', 'message': 'Server is running on port 5000'}, 200
 
 
 @app.route('/init-db', methods=['POST'])
