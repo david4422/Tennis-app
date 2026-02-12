@@ -5,7 +5,7 @@
 ## 🏗️ ארכיטקטורה
 
 - **Backend**: Flask (Python) - REST API
-- **Frontend**: Streamlit (Python) - Web UI
+- **Frontend**: React (js)
 - **Database**: PostgreSQL / SQLite (לפיתוח)
 - **Docker**: Containerization
 
@@ -21,7 +21,7 @@ tennis-matchmaking/
 │   ├── repositories/    # Data access layer
 │   └── services/        # External services (notifications, payments)
 ├── frontend/            # Streamlit UI
-│   ├── pages/           # Streamlit pages
+│   ├── pages/           # React pages
 │   └── services/        # API client services
 ├── docker-compose.yml   # Docker setup
 └── requirements.txt     # Python dependencies
@@ -51,7 +51,7 @@ python app.py
 ### 4. הרצת Frontend (Streamlit)
 ```bash
 cd frontend
-streamlit run main.py
+npm run dev 
 ```
 
 ### 5. הרצה עם Docker
@@ -80,6 +80,6 @@ docker-compose up
 
 - Python 3.10+
 - Flask 3.0
-- Streamlit 1.29
+- React
 - SQLAlchemy 2.0
 - PostgreSQL / SQLite
