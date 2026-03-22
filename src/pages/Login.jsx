@@ -1,91 +1,128 @@
-// --- Login Page ---
-// Email + password login form using Supabase Auth
-import { useState } from 'react'
-import { supabase } from '../supabaseClient'
-import { useNavigate } from 'react-router-dom'
+import { useEffect } from "react";
+import { useSignin } from "../features/authentication/useSignin";
+import Loader from "../components/Loader";
+import { useUser } from "../features/authentication/useUser";
+import Heading from "../components/Heading";
+import InputBox from "../components/InputBox";
+import TextLink from "../components/TextLink";
+import SubmitBtn from "../components/SubmitBtn";
+import MainContainer from "../components/MainContainer";
+import { useNavigate } from "react-router-dom";
+import FormContainer from "../components/FormContainer";
+import { Controller, useForm } from "react-hook-form";
+import { APP_NAME } from "../config";
 
-function Login() {
-  // --- State ---
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
-  const navigate = useNavigate()
 
-  // --- Handle login submit ---
-  async function handleSubmit(e) {
-    e.preventDefault()
-    setError(null)
+function Signin() {
+  document.title = APP_NAME + " - Sign in";
+  const { signin, isPending } = useSignin();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useUser();
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    trigger,
+  } = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-    if (error) {
-      setError(error.message)
-      return
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/", { replace: true });
     }
+  }, [isAuthenticated, navigate]);
 
-    navigate('/')
-  }
+  const onSubmit = (data) => {
+    const { email, password } = data;
 
-  // --- Styles ---
-  const containerStyle = {
-    maxWidth: '400px',
-    margin: '50px auto',
-    padding: '20px',
-  }
+    if (!email || !password) return;
 
-  const fieldStyle = {
-    marginBottom: '10px',
-  }
+    signin(
+      { email, password },
+      {
+        onSuccess: () => {
+          navigate("/", {
+            replace: true,
+          });
+        },
+      },
+    );
+  };
 
-  const inputStyle = {
-    width: '100%',
-    padding: '8px',
-  }
-
-  const buttonStyle = {
-    width: '100%',
-    padding: '10px',
-    background: '#58a6ff',
-    color: 'white',
-    border: 'none',
-    cursor: 'pointer',
-  }
-
-  // --- Render ---
   return (
-    <div style={containerStyle}>
-      <h1>Login</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div style={fieldStyle}>
-          <label>Email</label><br />
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={inputStyle}
-          />
-        </div>
-        <div style={fieldStyle}>
-          <label>Password</label><br />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={inputStyle}
-          />
-        </div>
-        <button type="submit" style={buttonStyle}>
-          Login
-        </button>
-      </form>
-    </div>
-  )
+    <MainContainer>
+
+      <FormContainer onSubmit={handleSubmit(onSubmit)}>
+        <Heading addClass="text-3xl">Sign in</Heading>
+
+        <Controller
+          name="email"
+          control={control}
+          rules={{
+            required: "Enter your email.",
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+              message: "Invalid email. Please enter a valid email.",
+            },
+          }}
+          render={({ field }) => (
+            <InputBox
+              type="email"
+              value={field.value || ""}
+              onChange={field.onChange}
+              placeholder="Email"
+              htmlFor="email"
+              error={errors.email?.message}
+              onBlur={() => trigger("email")}
+              disabled={isPending}
+            />
+          )}
+        />
+
+        <Controller
+          name="password"
+          control={control}
+          rules={{ required: "Enter a password." }}
+          render={({ field }) => (
+            <InputBox
+              type="password"
+              value={field.value || ""}
+              onChange={field.onChange}
+              placeholder="Password"
+              htmlFor="password"
+              error={errors.password?.message}
+              onBlur={() => trigger("password")}
+              disabled={isPending}
+            />
+          )}
+        />
+
+        <TextLink to="/login" addClass="mb-4">
+          Forgot password?
+        </TextLink>
+
+        <SubmitBtn disabled={isPending}>
+          {isPending ? (
+            <>
+              <Loader size="small" />
+              <span className="ml-2">Signing in...</span>
+            </>
+          ) : (
+            <span>Sign in</span>
+          )}
+        </SubmitBtn>
+
+        <p>
+          Don't have an account? <TextLink to="/register">Sign up</TextLink>
+        </p>
+      </FormContainer>
+    </MainContainer>
+  );
 }
 
-export default Login
+export default Signin;
